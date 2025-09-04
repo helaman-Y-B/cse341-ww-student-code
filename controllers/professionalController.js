@@ -1,7 +1,8 @@
+const userData = require("../models/getDataUser.js");
 
 const controller = {};
 
-controller.displayUserData = async (req, res) => {
+controller.userData = async (req, res) => {
     try {
 
         console.log("Fetching user data...");

@@ -1,6 +1,7 @@
 const express = require("express");
 const mongodb = require("./mongodb/connection.js");
 const mainController = require("./controllers/indexController.js")
+const professionalRoute = require("./routes/professionalRoute.js");
 
 const app = express();
 
@@ -8,7 +9,8 @@ app.set("view engine", "html");
 app.set("frontend", __dirname + "/frontend");
 
 app.use(express.static(__dirname + "/frontend"));
-app.get("/", mainController.displayUserData);
+app.use("/professional", professionalRoute);
+//app.get("/", mainController.displayUserData);
 
 mongodb.run((error) => {
   if (!error) {

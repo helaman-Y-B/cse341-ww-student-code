@@ -1,32 +1,27 @@
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 // The connection string
 const uri = process.env.URI;
-
-// Create a new MongoClient
-const client = new MongoClient(uri, {
-    // Set the Server API version
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-}); 
 
 let db;
 
 // The main function to run the MongoDB commands
 async function run(callback) {
     try {
-        await client.connect();
-        db = client.db("cse341assigments");
 
-        await client.db("admin").command({ ping: 1 });
+        if (db) {
+            return callback(null, db);
+        }
 
-        console.log("Connection made.");
-
-        return callback(null);
+        MongoClient.connect(uri).then((client) => {
+            //console.log("Connected to MongoDB: " + client.db().databaseName);
+            db = client.db();
+            callback(null, db);
+        }).catch((error) => {
+            console.error("Error connecting to MongoDB:", error);
+            callback(error);
+        });
 
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
@@ -35,7 +30,11 @@ async function run(callback) {
 
 // Get the database connection to work with it
 function getDb() {
-    console.log(db);
+    if (!db) {
+        throw Error("Database not initialized");
+    }
+
+    //console.log(db);
     return db;
 }
 
